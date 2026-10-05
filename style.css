@@ -1,0 +1,336 @@
+/* ============================================================
+   Простая анимация на чистом CSS — анимированное дерево
+   Автор: Харланович Алексей, ПИУКИС-23
+   ============================================================ */
+
+/* -------- Базовый сброс -------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(180deg, #c8e6f0 0%, #e8f4f8 100%);
+    color: #2c3e50;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+}
+
+/* -------- Заголовок и текст -------- */
+.intro {
+    text-align: center;
+    max-width: 700px;
+    margin-bottom: 30px;
+}
+
+.intro h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1e4d5c;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.intro p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #456a78;
+}
+
+.outro {
+    text-align: center;
+    margin-top: 30px;
+    max-width: 700px;
+    font-size: 15px;
+    color: #5a7d8a;
+}
+
+.outro strong {
+    color: #1e4d5c;
+}
+
+/* -------- Холст (небо) -------- */
+.canvas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    min-height: 600px;
+    background: linear-gradient(180deg, #a8d8ea 0%, #d4eef5 60%, #e8f4e0 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(30, 77, 92, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas::before,
+.canvas::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    filter: blur(8px);
+}
+
+.canvas::before {
+    width: 120px;
+    height: 60px;
+    top: 60px;
+    left: 80px;
+}
+
+.canvas::after {
+    width: 90px;
+    height: 45px;
+    top: 100px;
+    right: 100px;
+}
+
+/* -------- Дерево -------- */
+.tree {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 520px;
+    transform-origin: bottom center;
+    transition: transform 0.3s ease;
+}
+
+.tree:hover {
+    animation: tree-sway 3s ease-in-out infinite;
+}
+
+@keyframes tree-sway {
+    0%, 100% { transform: rotate(0deg); }
+    50%      { transform: rotate(2deg); }
+}
+
+/* -------- Ствол -------- */
+.trunk {
+    position: relative;
+    width: 14px;
+    height: 500px;
+    margin: 0 auto;
+    border-radius: 25px;
+    background: linear-gradient(to right, #6b4226, #3d2418);
+    transform-origin: bottom center;
+}
+
+/* -------- Ветки -------- */
+.branch {
+    position: absolute;
+    width: 6px;
+    border-radius: 25px;
+    background: linear-gradient(to right, #6b4226, #3d2418);
+    transform-origin: bottom center;
+    left: 50%;
+}
+
+.branch:nth-child(even) { transform: rotate(60deg); }
+.branch:nth-child(odd)  { transform: rotate(-60deg); }
+
+.branch:nth-child(1) { top: 180px; height: 180px; }
+.branch:nth-child(2) { top: 160px; height: 150px; }
+.branch:nth-child(3) { top: 120px; height: 150px; }
+.branch:nth-child(4) { top: 100px; height: 130px; }
+.branch:nth-child(5) { top: 70px;  height: 120px; }
+.branch:nth-child(6) { top: 50px;  height: 100px; }
+.branch:nth-child(7) { top: 30px;  height: 90px;  }
+.branch:nth-child(8) { top: 10px;  height: 80px;  }
+
+/* -------- Листья -------- */
+.leaf {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 75% 0 75% 0;
+    background: linear-gradient(to right, #77ed9e, #53ad71);
+    box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.leaf:nth-child(1) { top: 5px; }
+.leaf:nth-child(2) { top: 20px; }
+.leaf:nth-child(3) { top: 50px; }
+
+/* ============================================================
+   ЦВЕТОК
+   Стоит рядом с плодом, ровно (без наклона).
+   ============================================================ */
+.flower {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffb6d5, #e84a8a);
+    box-shadow: 0 0 6px rgba(232, 74, 138, 0.6);
+    top: 68px;
+    left: 50%;
+    transform: translateX(-50%);
+    transform-origin: center;
+    z-index: 4;
+}
+
+.flower::before,
+.flower::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ffd1e5;
+    top: -3px;
+    left: 2px;
+    z-index: -1;
+}
+
+.flower::after {
+    top: 7px;
+    left: -3px;
+}
+
+/* ============================================================
+   ПЛОД С НОЖКОЙ
+   ============================================================ */
+.fruit {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff6b6b, #c92a2a);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(0, 0, 0, 0.15);
+    top: 82px;
+    left: 50%;
+    transform: translateX(-50%);
+    transform-origin: top center;
+    z-index: 3;
+}
+
+.branch:nth-child(odd) .fruit {
+    animation-name: fruit-appear-odd;
+    animation-duration: 1.5s;
+    animation-fill-mode: both;
+    animation-delay: 6s;
+}
+
+.branch:nth-child(even) .fruit {
+    animation-name: fruit-appear-even;
+    animation-duration: 1.5s;
+    animation-fill-mode: both;
+    animation-delay: 6s;
+}
+
+/* Ножка — часть плода*/
+.fruit .stem {
+    position: absolute;
+    width: 2px;
+    height: 16px;
+    background: linear-gradient(to bottom, #4d7a3a, #3a5c2c);
+    border-radius: 2px;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* ============================================================
+   АНИМАЦИЯ
+   ============================================================ */
+
+@keyframes leaf-odd-grow {
+    0%   { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+@keyframes leaf-even-grow {
+    0%   { transform: rotate(-90deg) scale(0); }
+    100% { transform: rotate(-90deg) scale(1); }
+}
+
+@keyframes flower-bloom {
+    0%   { transform: translateX(-50%) scale(0) rotate(0deg);    opacity: 0; }
+    60%  { transform: translateX(-50%) scale(1.2) rotate(180deg); opacity: 1; }
+    100% { transform: translateX(-50%) scale(1) rotate(360deg);   opacity: 1; }
+}
+
+@keyframes fruit-appear-odd {
+    0%   { transform: translateX(-50%)  rotate(60deg)  scale(0);    opacity: 0; }
+    70%  { transform: translateX(-140%) rotate(60deg)  scale(1.15); opacity: 1; }
+    100% { transform: translateX(-140%) rotate(60deg)  scale(1);    opacity: 1; }
+}
+
+@keyframes fruit-appear-even {
+    0%   { transform: translateX(-50%) rotate(-60deg) scale(0);    opacity: 0; }
+    70%  { transform: translateX(40%)  rotate(-60deg) scale(1.15); opacity: 1; }
+    100% { transform: translateX(40%)  rotate(-60deg) scale(1);    opacity: 1; }
+}
+
+/* Листья — нечётные */
+.leaf:nth-child(odd) {
+    left: 100%;
+    transform-origin: 0% 100%;
+    animation-name: leaf-odd-grow;
+    animation-duration: 4s;
+    animation-fill-mode: both;
+}
+
+/* Листья — чётные */
+.leaf:nth-child(even) {
+    left: -150%;
+    transform-origin: 50% 100%;
+    animation-name: leaf-even-grow;
+    animation-duration: 4s;
+    animation-fill-mode: both;
+}
+
+/* Задержки для рядов листьев */
+.leaf:nth-child(1) { top: 5px;  animation-delay: 3.5s; }
+.leaf:nth-child(2) { top: 20px; animation-delay: 3s;   }
+.leaf:nth-child(3) { top: 50px; animation-delay: 2.5s; }
+
+/* Цветы */
+.flower {
+    animation-name: flower-bloom;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    animation-delay: 5s;
+}
+
+/* Плоды */
+.fruit {
+    animation-name: fruit-appear;
+    animation-duration: 1.5s;
+    animation-fill-mode: both;
+    animation-delay: 6s;
+}
+
+/* ============================================================
+   АДАПТИВ
+   ============================================================ */
+@media (max-width: 600px) {
+    .intro h1 { font-size: 28px; }
+    .intro p  { font-size: 15px; }
+
+    .canvas {
+        min-height: 500px;
+        border-radius: 14px;
+    }
+
+    .tree  { height: 440px; }
+    .trunk { height: 420px; }
+
+    .branch:nth-child(1) { top: 150px; height: 150px; }
+    .branch:nth-child(2) { top: 130px; height: 130px; }
+    .branch:nth-child(3) { top: 100px; height: 120px; }
+    .branch:nth-child(4) { top: 80px;  height: 110px; }
+    .branch:nth-child(5) { top: 60px;  height: 100px; }
+    .branch:nth-child(6) { top: 40px;  height: 90px;  }
+    .branch:nth-child(7) { top: 25px;  height: 80px;  }
+    .branch:nth-child(8) { top: 10px;  height: 70px;  }
+}
